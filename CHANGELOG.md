@@ -17,7 +17,7 @@
 
 ## Flask
 
-* 2018-12-07 - v5 - Created - Extends Python v5, added Python 3.6 variant, removed gunicorn and event preinstalls, changed CMD to use sync worker
+* 2018-12-07 - v5 - Created - Extends Python v5, added Python 3.6 variant, removed gunicorn and eventlet preinstalls, changed CMD to use sync worker
 * 2017-10-03 - v4 - Created - Extends Python v4, removed TEMPLATES\_AUTO\_RELOAD environment variable
 * 2017-04-07 - v3 - Created - Differences to v2: Locale explicitly set to en_GB, gunicorn and eventlet updated, extends python v3.
 * Earlier - v2 - Created - Differences to v1: Removed FLASK_LOG_LEVEL env var, extends python v2.
