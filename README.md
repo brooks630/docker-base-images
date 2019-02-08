@@ -4,6 +4,8 @@ There are four base Docker images that apps can extend from: Python, Flask (exte
 
 They extend CentOS and contain some preinstalled packages and environment variables, to provide some level of consistency with the proper HMLR infrastructure and allow for consistency between applications.
 
+There is also a Squid image, built from source (with HTTPS support added) with the tag matching the compiled Squid version. This is for use as a commodity within the common-dev-env.
+
 ## Making changes
 
 Changes must be pushed to the Docker Hub. The general process is this:

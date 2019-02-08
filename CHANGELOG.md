@@ -28,3 +28,7 @@
 * 2017-10-03 - v3 - Created - Updated CentOS to 7.4, updated ruby and bundler to 2.4.2 and 1.15.4 respectively
 * 2017-04-07 - v2 - Created - Difference to v1: Locale explicitly set to en_GB
 * 2017-04-07 - v1 - Updated - added installation of extra fonts
+
+## Squid
+
+* 2019-02-08 - v4.5 - Created
