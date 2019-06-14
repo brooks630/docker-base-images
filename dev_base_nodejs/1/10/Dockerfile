@@ -11,8 +11,6 @@ ENV LANG='en_GB.UTF-8' \
     LANGUAGE='en_GB:en' \
     LC_ALL='en_GB.UTF-8'
 
-COPY contrib/bin/scl_enable /usr/local/bin/scl_enable
-
 # Install support for overlayfs (the default in docker 1.13+)
 # Update system, despite a warning against this: https://docs.docker.com/articles/dockerfile_best-practices/#run
 # The official CentOS Dockerfiles repo recommends it: https://github.com/CentOS/CentOS-Dockerfiles/blob/master/nginx/centos7/Dockerfile#L10
@@ -21,8 +19,15 @@ RUN yum -y -q install yum-plugin-ovl --setopt=tsflags=nodocs && \
   yum -q -y update --setopt=tsflags=nodocs && \
   yum -q -y clean all
 
+COPY contrib/bin/scl_enable /usr/local/bin/scl_enable
+
+ENV BASH_ENV=/usr/local/bin/scl_enable \
+    ENV=/usr/local/bin/scl_enable \
+    PROMPT_COMMAND=". /usr/local/bin/scl_enable"
+
 # Install NodeJS
-RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \    
+RUN yum -q -y install centos-release-scl-rh && \
+    yum-config-manager --enable rhel-server-rhscl-7-rpms && \    
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     yum-config-manager --enable rhel-server-rhscl-8-rpms && \ 
     yum-config-manager --enable rhel-8-server-optional-rpms && \
