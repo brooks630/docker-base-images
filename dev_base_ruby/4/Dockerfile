@@ -83,11 +83,11 @@ RUN set -ex \
 CMD [ "irb" ]
 
 # Install ChromeDriver
-RUN wget https://chromedriver.storage.googleapis.com/2.43/chromedriver_linux64.zip && \
+RUN wget https://chromedriver.storage.googleapis.com/77.0.3865.40/chromedriver_linux64.zip && \
     unzip chromedriver_linux64.zip && \
     mv chromedriver /usr/bin/ && \
 	rm chromedriver_linux64.zip && \
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm && \
-    yum install -y google-chrome-stable_current_x86_64.rpm && \
+    yum localinstall -y google-chrome-stable_current_x86_64.rpm && \
     rm google-chrome-stable_current_x86_64.rpm && \
 	yum install -y -q fontconfig xorg-x11-fonts-Type1
