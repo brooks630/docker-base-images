@@ -24,8 +24,8 @@
 
 ## Ruby
 
-* 2019-10-03 - v4.1 - Created - Updated CentOS to latest v7 base, ruby to 2.6.5, rubygems to 3.0.6 and  bundler to 2.0.2
-* 2019-10-03 - v4 - Updated - Updated Chrome/ChromeDriver to 77.0.3865.40
+* 2019-10-03 - v4.1 - Created - Updated ChromeDriver to 77.0.3865.40, Ruby to 2.6.5, rubygems to 3.0.6 and  bundler to 2.0.2
+* 2019-10-03 - v4 - Republished - Updated CentOS to latest v7 base, changed base language to en_US, updated Chrome to 77.0.3865.40
 * 2018-12-07 - v4 - Created - Updated CentOS to 7.5, ruby to 2.5, and bundler to 1.17; replace PhantomJS with headless Chrome
 * 2017-10-03 - v3 - Created - Updated CentOS to 7.4, updated ruby and bundler to 2.4.2 and 1.15.4 respectively
 * 2017-04-07 - v2 - Created - Difference to v1: Locale explicitly set to en_GB
