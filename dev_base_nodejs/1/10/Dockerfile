@@ -5,11 +5,10 @@
 # Set the base image to Centos. NOTE: By not specifying the minor version, future rebuilds may download a more up to date image
 FROM centos:centos7
 
-# Set locale to be en_GB, this prevents UnicodeDecodeError and other random issues that might occur due to the lack of one
-RUN localedef -c -i en_GB -f UTF-8 en_GB.UTF-8
-ENV LANG='en_GB.UTF-8' \
-    LANGUAGE='en_GB:en' \
-    LC_ALL='en_GB.UTF-8'
+# Set locale variables, this prevents UnicodeDecodeError and other random issues that might occur due to the lack of one
+ENV LANG='en_US.UTF-8' \
+    LANGUAGE='en_US:en' \
+    LC_ALL='en_US.UTF-8'
 
 # Install support for overlayfs (the default in docker 1.13+)
 # Update system, despite a warning against this: https://docs.docker.com/articles/dockerfile_best-practices/#run
