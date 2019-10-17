@@ -10,6 +10,7 @@
 
 ## Python
 
+* 2019-10-17 - v5 - Republished - Fixed IUS yum repository, updated CentOS to latest v7 base, changed base language to en_US and updated Python to 3.4.10 and 3.6.8
 * 2018-12-07 - v5 - Created - Updated CentOS to 7.5, added Python 3.6 variant (tag 5-3.6)
 * 2017-10-03 - v4 - Created - Updated CentOS to 7.4, removed LOG_LEVEL environment variable
 * 2017-04-07 - v3 - Created - Difference to v2: Locale explicitly set to en_GB
@@ -17,6 +18,7 @@
 
 ## Flask
 
+* 2019-10-17 - v5 - Republished - Extends republished Python v5, reduced gunicorn worker and thread count to 2/2 from 4/16
 * 2018-12-07 - v5 - Created - Extends Python v5, added Python 3.6 variant, removed gunicorn and eventlet preinstalls, changed CMD to use sync worker
 * 2017-10-03 - v4 - Created - Extends Python v4, removed TEMPLATES\_AUTO\_RELOAD environment variable
 * 2017-04-07 - v3 - Created - Differences to v2: Locale explicitly set to en_GB, gunicorn and eventlet updated, extends python v3.

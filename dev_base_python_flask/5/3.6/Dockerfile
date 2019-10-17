@@ -32,4 +32,4 @@ WORKDIR /src
 #   Access log is redirected to stderr.
 #   Flask app object is located in manage.py
 #   Dynamic reloading is enabled.
-CMD ["/usr/bin/gunicorn", "--workers", "4", "--threads", "16", "--pythonpath", "/src", "--access-logfile", "-", "manage:manager.app", "--reload"]
+CMD ["/usr/bin/gunicorn", "--workers", "2", "--threads", "2", "--pythonpath", "/src", "--access-logfile", "-", "manage:manager.app", "--reload"]
