@@ -35,6 +35,7 @@
 
 ## Squid
 
+* 2019-10-24 - v4.8 - Created - Updated squid to 4.8 and base image to ubuntu
 * 2019-02-08 - v4.5 - Created
 
 ## NodeJS
