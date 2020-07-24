@@ -42,5 +42,6 @@
 
 ## NodeJS
 
+* 2020-07-24 - v1 - Republished - Updated Node to 10.19.0
 * 2019-10-09 - v1 - Republished - Updated CentOS to latest v7 base and Node to 10.10, changed base language to en_US
 * 2019-06-14 - v1 - Created
