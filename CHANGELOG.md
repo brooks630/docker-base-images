@@ -35,6 +35,7 @@
 
 ## Squid
 
+* 2021-09-28 - v5 - Created - updated ubuntu to 20.04 and squid to 5.1
 * 2020-06-17 - v4 - Created - Updated squid to 4.12 and changed to generic tag
 * 2019-11-15 - v4.9 - Created - Updated squid to 4.9
 * 2019-10-24 - v4.8 - Created - Updated squid to 4.8 and base image to ubuntu
