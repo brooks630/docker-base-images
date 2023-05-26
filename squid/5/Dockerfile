@@ -1,6 +1,6 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-ARG SQUID_VERSION=5.1
+ARG SQUID_VERSION=5.9
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y -q curl g++ make libssl-dev pkg-config \
