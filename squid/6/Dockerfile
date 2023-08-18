@@ -5,7 +5,8 @@ ARG SQUID_VERSION=6.2
 ENV SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_LOG_DIR=/var/log/squid \
     SQUID_SSLDB_DIR=/var/lib/ssl_db \
-    SQUID_USER=proxy
+    SQUID_USER=proxy \
+    SQUID_GROUP=root
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y -q curl g++ make libssl-dev pkg-config \
@@ -16,25 +17,11 @@ RUN apt-get update \
  && ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
  && make install \
  && cd .. && rm -rf squid-${SQUID_VERSION} && rm squid-${SQUID_VERSION}.tar.gz \
- && echo "Creating log directory..." \
- && mkdir -p ${SQUID_LOG_DIR} \
- && chmod -R 755 ${SQUID_LOG_DIR} \
- && chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_LOG_DIR} \
- && echo "Creating cache directory..." \
- && mkdir -p ${SQUID_CACHE_DIR} \
- && chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_CACHE_DIR} \
- && echo "Initializing cache..." \
- && squid -N -f /etc/squid/squid.conf -z \
- && echo "Initializing SSL cert database..." \
- && /usr/lib/squid/security_file_certgen -c -s ${SQUID_SSLDB_DIR} -M 4MB \
- && echo "Setting SSL cert directory permissions..." \
- && chmod -R 755 ${SQUID_SSLDB_DIR} \
- && chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_SSLDB_DIR} \
- && echo "Adding tini..." \
- && curl -L https://github.com/krallin/tini/releases/download/v0.18.0/tini > /tini \
- && chmod +x /tini
+ && curl -L https://github.com/krallin/tini/releases/download/v0.19.0/tini > /tini \
+ && chmod +x /tini \
+ && usermod -a -G ${SQUID_GROUP} ${SQUID_USER}
 
-COPY squid.conf ssl.pem /etc/squid/
+COPY squid.conf ssl.pem entrypoint.sh /etc/squid/
 
 EXPOSE 3128/tcp
 VOLUME /var/spool/squid
@@ -43,4 +30,4 @@ VOLUME /var/spool/squid
 ENTRYPOINT ["/tini", "-e", "143", "--"]
 
 # Set squid CMD
-CMD ["squid", "-f", "/etc/squid/squid.conf", "-NYd", "1"]
+CMD ["bash", "/etc/squid/entrypoint.sh"]
