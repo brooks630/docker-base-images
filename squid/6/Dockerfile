@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-ARG SQUID_VERSION=6.2
+ARG SQUID_VERSION=6.7
 
 ENV SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_LOG_DIR=/var/log/squid \
