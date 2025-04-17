@@ -12,11 +12,11 @@ RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y -q curl g++ make libssl-dev pkg-config \
  && rm -rf /var/lib/apt/lists/* \
  && curl -O https://github.com/squid-cache/squid/archive/refs/tags/${SQUID_VERSION}.tar.gz \
- && tar xzf squid-${SQUID_VERSION}.tar.gz \
- && cd squid-${SQUID_VERSION} \
+ && tar xzf ${SQUID_VERSION}.tar.gz \
+ && cd ${SQUID_VERSION} \
  && ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
  && make install \
- && cd .. && rm -rf squid-${SQUID_VERSION} && rm squid-${SQUID_VERSION}.tar.gz \
+ && cd .. && rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
  && curl -L https://github.com/krallin/tini/releases/download/v0.19.0/tini > /tini \
  && chmod +x /tini \
  && usermod -a -G ${SQUID_GROUP} ${SQUID_USER}
