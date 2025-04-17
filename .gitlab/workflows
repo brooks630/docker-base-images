@@ -1,0 +1,29 @@
+name: Squid Base Image CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: squid/5
+          file: Dockerfile
+          push: true
+          tags: brooks630/squid:5
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: squid/6
+          file: Dockerfile
+          push: true
+          tags: brooks630/squid:6
