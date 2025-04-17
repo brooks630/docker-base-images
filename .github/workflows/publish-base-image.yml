@@ -25,11 +25,11 @@ jobs:
           context: ./squid/5
           file: ./squid/5/Dockerfile
           push: true
-          tags: ghcr.io/brooks630/squid:5
+          tags: ghcr.io/${{ github.repository_owner }}/squid:5
       - name: Build and push Docker image (Squid 6)
         uses: docker/build-push-action@v6
         with:
           context: ./squid/6
           file: ./squid/6/Dockerfile
           push: true
-          tags: ghcr.io/brooks630/squid:6
+          tags: ghcr.io/${{ github.repository_owner }}/squid:6
