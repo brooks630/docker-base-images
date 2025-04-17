@@ -17,13 +17,13 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./squid/5
-          file: Dockerfile
+          file: ./squid/5/Dockerfile
           push: true
           tags: brooks630/squid:5
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: ./squid/6
-          file: Dockerfile
+          file: ./squid/6/Dockerfile
           push: true
           tags: brooks630/squid:6
