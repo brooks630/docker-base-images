@@ -1,6 +1,7 @@
 FROM public.ecr.aws/lts/ubuntu:24.04
 
-ARG SQUID_VERSION=SQUID_6_13
+ARG SQUID_RELEASE=SQUID_6_13
+ARG SQUID_VERSION=squid-6.13
 
 ENV SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_LOG_DIR=/var/log/squid \
@@ -11,8 +12,8 @@ ENV SQUID_CACHE_DIR=/var/spool/squid \
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt install -y -qq curl g++ make libssl-dev pkg-config \
  && rm -rf /var/lib/apt/lists/* \
- && curl https://github.com/squid-cache/squid/archive/refs/tags/${SQUID_VERSION}.tar.gz -o ${SQUID_VERSION}.tgz \
- && tar xzf ${SQUID_VERSION}.tgz \
+ && curl -O https://github.com/squid-cache/squid/releases/download/${SQUID_RELEASE}/${SQUID_VERSION}.tar.gz \
+ && tar xzf ${SQUID_VERSION}.tar.gz \
  && cd ${SQUID_VERSION} \
  && ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
  && make install \
