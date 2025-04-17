@@ -10,7 +10,7 @@ ENV SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_GROUP=root
 
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt install -y -qq curl g++ make libssl-dev pkg-config \
+ && DEBIAN_FRONTEND=noninteractive apt install -y -qq curl g++ make libssl-dev pkg-config wget \
  && rm -rf /var/lib/apt/lists/* \
  && wget https://github.com/squid-cache/squid/releases/download/${SQUID_RELEASE}/${SQUID_VERSION}.tar.gz \
  && tar xzf ${SQUID_VERSION}.tar.gz \
