@@ -9,7 +9,7 @@ RUN apt-get update \
  && tar xzf squid-${SQUID_VERSION}.tar.gz \
  && cd squid-${SQUID_VERSION} \
  && ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
- && make -q install \
+ && make -s install \
  && cd .. && rm -rf squid-${SQUID_VERSION} && rm squid-${SQUID_VERSION}.tar.gz
 
 ENV SQUID_CACHE_DIR=/var/spool/squid \
