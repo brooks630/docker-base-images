@@ -12,7 +12,7 @@ RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt install -y -qq curl g++ make libssl-dev pkg-config \
  && rm -rf /var/lib/apt/lists/* \
  && curl -O https://github.com/squid-cache/squid/archive/refs/tags/SQUID_${SQUID_VERSION}.tar.gz \
- && tar xzf squid-${SQUID_VERSION}.tar.gz \
+ && tar xzf SQUID_${SQUID_VERSION}.tar.gz \
  && cd SQUID_${SQUID_VERSION} \
  && ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
  && make -s install \
