@@ -16,7 +16,7 @@ RUN apt-get update \
  && tar xzf ${SQUID_VERSION}.tar.gz \
  && cd ${SQUID_VERSION} \
  && ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
- && make install \
+ && make -s install \
  && cd .. && rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
  && curl -L https://github.com/krallin/tini/releases/download/v0.19.0/tini > /tini \
  && chmod +x /tini \
