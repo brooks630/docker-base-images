@@ -1,6 +1,6 @@
 FROM public.ecr.aws/lts/ubuntu:24.04
 
-ARG SQUID_VERSION=6.7
+ARG SQUID_VERSION=6.13
 
 ENV SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_LOG_DIR=/var/log/squid \
