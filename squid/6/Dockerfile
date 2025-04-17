@@ -1,4 +1,4 @@
-FROM ubuntu.azurecr.io/ubuntu:24.04
+FROM public.ecr.aws/lts/ubuntu:24.04
 
 ARG SQUID_VERSION=6.7
 
