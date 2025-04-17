@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lts/ubuntu:24.04
+FROM quay.io/lib/ubuntu:24.04
 
 ARG SQUID_VERSION=5.9
 

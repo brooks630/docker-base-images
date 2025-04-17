@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lts/ubuntu:24.04
+FROM quay.io/lib/ubuntu:24.04
 
 ARG SQUID_RELEASE=SQUID_6_13
 ARG SQUID_VERSION=squid-6.13
