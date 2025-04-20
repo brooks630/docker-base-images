@@ -18,7 +18,7 @@ jobs:
         id: set-matrix
         run: |
           # Find all numerical subdirectories in the squid directory
-          matrix=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | jq -R . | jq -s .)
+          matrix=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | jq -R . | jq -s -c .)
           if [ -z "$matrix" ] || [ "$matrix" = "[]" ]; then
             echo "No valid subdirectories found. Exiting."
             exit 1
