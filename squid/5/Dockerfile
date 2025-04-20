@@ -5,7 +5,7 @@ ARG SQUID_VERSION=5.9
 WORKDIR /tmp
 
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends curl=8.5.0-2ubuntu10.6 g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3.5 pkg-config=1.8.1-2build1 \
+ && DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends curl=8.5.0-2ubuntu10.6 g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3.5 pkg-config=1.8.1-2build1 \
  && rm -rf /var/lib/apt/lists/* \
  && curl -O http://www.squid-cache.org/Versions/v5/squid-${SQUID_VERSION}.tar.gz \
  && tar xzf squid-${SQUID_VERSION}.tar.gz
