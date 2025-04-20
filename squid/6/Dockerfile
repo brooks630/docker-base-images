@@ -19,7 +19,7 @@ RUN apt-get update \
 
 WORKDIR /tmp/${SQUID_VERSION}
 
-RUN ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir='\${prefix}/lib/squid' --datadir='\${prefix}/share/squid' --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
+RUN ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir="\${prefix}/lib/squid" --datadir="\${prefix}/share/squid" --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
  && make -s install
 
 WORKDIR /tmp
