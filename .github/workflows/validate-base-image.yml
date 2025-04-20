@@ -45,7 +45,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Lint check
-        uses: hadolint/hadolint-action@v3
+        uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
       - name: Set up Docker Buildx
