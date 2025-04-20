@@ -33,7 +33,7 @@ jobs:
           latest_version=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | tail -1)
           echo "Latest version: $latest_version"
           echo "latest_version=$latest_version" >> $GITHUB_OUTPUT
-  build_and_publish:
+  build_and_test:
     needs: generate_version_information
     runs-on: ubuntu-latest
     strategy:
