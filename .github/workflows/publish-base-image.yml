@@ -53,10 +53,11 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Generate timestamp
         id: timestamp
-        uses: nanzm/get-time-action@v2
-        with:
-          timeZone: UTC
-          format: 'YYYYMMDD-HHmmss'
+        run: |
+          # Generate a timestamp in the format YYYYMMDD-HHMMSS
+          timestamp=$(date -u +"%Y%m%d-%H%M%S")
+          echo "Timestamp: $timestamp"
+          echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
       - name: Build and push Docker image (Squid ${{ matrix.squid_version }})
         uses: docker/build-push-action@v6
         with:
@@ -66,4 +67,4 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}
             ghcr.io/${{ github.repository_owner }}/squid:${{ env.LATEST_VERSION == matrix.squid_version && 'latest' || '' }}
-            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ steps.timestamp.outputs.time }}
+            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ steps.timestamp.outputs.timestamp }}
