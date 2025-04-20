@@ -7,6 +7,7 @@ on:
 
 jobs:
   generate_version_information:
+    name: Generate Version Information
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -33,6 +34,7 @@ jobs:
           echo "Latest version: $latest_version"
           echo "latest_version=$latest_version" >> $GITHUB_OUTPUT
   build_and_publish:
+    name: Build and Publish Squid Base Image for ${{ matrix.squid_version }}
     needs: generate_version_information
     runs-on: ubuntu-latest
     strategy:
