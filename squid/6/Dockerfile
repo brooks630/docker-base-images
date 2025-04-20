@@ -12,9 +12,9 @@ ENV SQUID_CACHE_DIR=/var/spool/squid \
 WORKDIR /tmp
 
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3 pkg-config=1.8.1-2build1 wget=1.21.4-1ubuntu4 \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3 pkg-config=1.8.1-2build1 wget=1.21.4-1ubuntu4 \
  && rm -rf /var/lib/apt/lists/* \
- && wget https://github.com/squid-cache/squid/releases/download/${SQUID_RELEASE}/${SQUID_VERSION}.tar.gz \
+ && wget https://github.com/squid-cache/squid/releases/download/${SQUID_RELEASE}/${SQUID_VERSION}.tar.gz -q \
  && tar xzf ${SQUID_VERSION}.tar.gz
 
 WORKDIR /tmp/${SQUID_VERSION}
@@ -25,7 +25,7 @@ RUN ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/
 WORKDIR /tmp
 
 RUN rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
- && wget https://github.com/krallin/tini/releases/download/v0.19.0/tini -O /tini \
+ && wget https://github.com/krallin/tini/releases/download/v0.19.0/tini -q -O /tini \
  && chmod +x /tini \
  && usermod -a -G ${SQUID_GROUP} ${SQUID_USER}
 
