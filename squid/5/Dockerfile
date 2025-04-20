@@ -5,14 +5,14 @@ ARG SQUID_VERSION=5.9
 WORKDIR /tmp
 
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl g++ make libssl-dev pkg-config \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends curl=8.5.0 g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3 pkg-config=1.8.1-2build1 \
  && rm -rf /var/lib/apt/lists/* \
  && curl -O http://www.squid-cache.org/Versions/v5/squid-${SQUID_VERSION}.tar.gz \
  && tar xzf squid-${SQUID_VERSION}.tar.gz
 
 WORKDIR /tmp/squid-${SQUID_VERSION}
 
-RUN ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
+RUN ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir='\${prefix}/lib/squid' --datadir='\${prefix}/share/squid' --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
  && make -s install
 
 WORKDIR /tmp
