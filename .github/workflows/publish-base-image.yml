@@ -14,7 +14,7 @@ jobs:
       latest_version: ${{ steps.set-latest.outputs.latest_version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Generate matrix dynamically
         id: set-matrix
         run: |
@@ -44,7 +44,7 @@ jobs:
       LATEST_VERSION: ${{ needs.generate_version_information.outputs.latest_version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
