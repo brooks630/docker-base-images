@@ -10,22 +10,22 @@ jobs:
     name: Generate Version Information
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      versions: ${{ steps.set-versions.outputs.versions }}
       latest_version: ${{ steps.set-latest.outputs.latest_version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Generate matrix dynamically
-        id: set-matrix
+      - name: Generate versions dynamically
+        id: set-versions
         run: |
           # Find all numerical subdirectories in the squid directory
-          matrix=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | jq -R . | jq -s -c .)
-          if [ -z "$matrix" ] || [ "$matrix" = "[]" ]; then
+          versions=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | jq -R . | jq -s -c .)
+          if [ -z "$versions" ] || [ "$versions" = "[]" ]; then
             echo "No valid subdirectories found. Exiting."
             exit 1
           fi
-          echo "Matrix: $matrix"
-          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+          echo "Versions: $versions"
+          echo "versions=$versions" >> $GITHUB_OUTPUT
       - name: Determine latest version
         id: set-latest
         run: |
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        squid_version: ${{ fromJson(needs.generate_version_information.outputs.matrix) }}
+        squid_version: ${{ fromJson(needs.generate_version_information.outputs.versions) }}
     env:
       LATEST_VERSION: ${{ needs.generate_version_information.outputs.latest_version }}
     steps:
