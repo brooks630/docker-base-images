@@ -58,12 +58,22 @@ jobs:
           timestamp=$(date -u +"%Y%m%d-%H%M%S")
           echo "Timestamp: $timestamp"
           echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
-      - name: Build and push Docker image (Squid ${{ matrix.squid_version }})
+      - name: Build image (Squid ${{ matrix.squid_version }})
+        uses: docker/build-push-action@v6
+        with:
+          load: true
+          context: ./squid/${{ matrix.squid_version }}
+          file: ./squid/${{ matrix.squid_version }}/Dockerfile
+          tags: user/squid:${{ matrix.squid_version }}-test
+      - name: Test image (Squid ${{ matrix.squid_version }})
+        run: docker run --rm user/squid:${{ matrix.squid_version }}-test
+      - name: Build and push image (Squid ${{ matrix.squid_version }})
         uses: docker/build-push-action@v6
         with:
           context: ./squid/${{ matrix.squid_version }}
           file: ./squid/${{ matrix.squid_version }}/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ steps.timestamp.outputs.timestamp }}
