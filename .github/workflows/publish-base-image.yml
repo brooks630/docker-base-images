@@ -19,6 +19,10 @@ jobs:
         run: |
           # Find all numerical subdirectories in the squid directory
           matrix=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | jq -R . | jq -s .)
+          if [ -z "$matrix" ] || [ "$matrix" = "[]" ]; then
+            echo "No valid subdirectories found. Exiting."
+            exit 1
+          fi
           echo "Matrix: $matrix"
           echo "::set-output name=matrix::$matrix"
       - name: Determine latest version
