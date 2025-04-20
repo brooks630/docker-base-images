@@ -24,14 +24,14 @@ jobs:
             exit 1
           fi
           echo "Matrix: $matrix"
-          echo "::set-output name=matrix::$matrix"
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
       - name: Determine latest version
         id: set-latest
         run: |
           # Find the highest numerical subdirectory
           latest_version=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | tail -1)
           echo "Latest version: $latest_version"
-          echo "::set-output name=latest_version::$latest_version"
+          echo "latest_version=$latest_version" >> $GITHUB_OUTPUT
   build_and_publish:
     needs: generate_version_information
     runs-on: ubuntu-latest
