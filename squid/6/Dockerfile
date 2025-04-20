@@ -12,7 +12,7 @@ ENV SQUID_CACHE_DIR=/var/spool/squid \
 WORKDIR /tmp
 
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3.5 pkg-config=1.8.1-2build1 wget=1.21.4-1ubuntu4.1 \
+ && DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends ca-certificates=20240203 g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3.5 pkg-config=1.8.1-2build1 wget=1.21.4-1ubuntu4.1 \
  && rm -rf /var/lib/apt/lists/* \
  && update-ca-certificates -f \
  && wget --progress=dot:giga https://github.com/squid-cache/squid/releases/download/${SQUID_RELEASE}/${SQUID_VERSION}.tar.gz \
