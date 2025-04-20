@@ -66,5 +66,5 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}
-            ghcr.io/${{ github.repository_owner }}/squid:${{ env.LATEST_VERSION == matrix.squid_version && 'latest' || '' }}
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ steps.timestamp.outputs.timestamp }}
+            ${{ matrix.squid_version == env.LATEST_VERSION && format('ghcr.io/{0}/squid:latest', github.repository_owner) || '' }}
