@@ -9,15 +9,22 @@ ENV SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_USER=proxy \
     SQUID_GROUP=root
 
+WORKDIR /tmp
+
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt install -y -qq curl g++ make libssl-dev pkg-config wget \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl g++ make libssl-dev pkg-config wget \
  && rm -rf /var/lib/apt/lists/* \
  && wget https://github.com/squid-cache/squid/releases/download/${SQUID_RELEASE}/${SQUID_VERSION}.tar.gz \
- && tar xzf ${SQUID_VERSION}.tar.gz \
- && cd ${SQUID_VERSION} \
- && ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
- && make -s install \
- && cd .. && rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
+ && tar xzf ${SQUID_VERSION}.tar.gz
+
+WORKDIR /tmp/${SQUID_VERSION}
+
+RUN ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
+ && make -s install
+
+WORKDIR /tmp
+
+RUN rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
  && curl -L https://github.com/krallin/tini/releases/download/v0.19.0/tini > /tini \
  && chmod +x /tini \
  && usermod -a -G ${SQUID_GROUP} ${SQUID_USER}
