@@ -1,9 +1,10 @@
-name: Squid Base Image Publish CI
+name: Squid Base Image Validate CI
 
 on:
   push:
     branches:
-      - master
+      - '!master'
+  pull_request:
 
 jobs:
   generate_version_information:
@@ -43,28 +44,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Lint check
         uses: hadolint/hadolint-action@v3
         with:
           dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Generate timestamp
-        id: timestamp
-        run: |
-          # Generate a timestamp in the format YYYYMMDD-HHMMSS
-          rundate=$(date -u +"%Y%m%d")
-          timestamp=$(date -u +"%Y%m%d-%H%M%S")
-          echo "Date: $rundate"
-          echo "Timestamp: $timestamp"
-          echo "rundate=$rundate" >> $GITHUB_OUTPUT
-          echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
       - name: Build image
         uses: docker/build-push-action@v6
         with:
@@ -74,15 +59,3 @@ jobs:
           tags: user/squid:${{ matrix.squid_version }}-test
       - name: Test image
         run: docker run --rm user/squid:${{ matrix.squid_version }}-test
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./squid/${{ matrix.squid_version }}
-          file: ./squid/${{ matrix.squid_version }}/Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}
-            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ steps.timestamp.outputs.rundate }}
-            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ steps.timestamp.outputs.timestamp }}
-            ${{ matrix.squid_version == env.LATEST_VERSION && format('ghcr.io/{0}/squid:latest', github.repository_owner) || '' }}
