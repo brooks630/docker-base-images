@@ -2,15 +2,23 @@ FROM quay.io/lib/ubuntu:24.04
 
 ARG SQUID_VERSION=5.9
 
+WORKDIR /tmp
+
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt install -y -qq curl g++ make libssl-dev pkg-config \
+ && DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends ca-certificates=20240203 curl=8.5.0-2ubuntu10.6 g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3.5 pkg-config=1.8.1-2build1 \
  && rm -rf /var/lib/apt/lists/* \
+ && update-ca-certificates -f \
  && curl -O http://www.squid-cache.org/Versions/v5/squid-${SQUID_VERSION}.tar.gz \
- && tar xzf squid-${SQUID_VERSION}.tar.gz \
- && cd squid-${SQUID_VERSION} \
- && ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir=\${prefix}/lib/squid --datadir=\${prefix}/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
- && make -s install \
- && cd .. && rm -rf squid-${SQUID_VERSION} && rm squid-${SQUID_VERSION}.tar.gz
+ && tar xzf squid-${SQUID_VERSION}.tar.gz
+
+WORKDIR /tmp/squid-${SQUID_VERSION}
+
+RUN ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir="\${prefix}/lib/squid" --datadir="\${prefix}/share/squid" --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
+ && make -s install
+
+WORKDIR /tmp
+
+RUN rm -rf squid-${SQUID_VERSION} && rm squid-${SQUID_VERSION}.tar.gz
 
 ENV SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_LOG_DIR=/var/log/squid \
