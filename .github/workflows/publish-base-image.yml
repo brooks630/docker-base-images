@@ -52,9 +52,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Lint check
-        uses: hadolint/hadolint-action@v3
+        uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Generate timestamp
