@@ -41,7 +41,7 @@ jobs:
       matrix:
         architecture: [amd64, arm64]
         squid_version: ${{ fromJson(needs.generate_version_information.outputs.versions) }}
-    runs-on: ${{ matrix.architecture == 'arm64' && 'ubuntu-22.04-arm64' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.architecture == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
