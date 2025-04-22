@@ -38,7 +38,7 @@ jobs:
         id: timestamp
         run: |
           # Generate a timestamp in the format YYYYMMDD-HHMMSS
-          rundate=$(date -u +"%Y%m%d")
+          timestamp=$(date -u +"%Y%m%d-%H%M%S")
           echo "Timestamp: $timestamp"
           echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
   build:
