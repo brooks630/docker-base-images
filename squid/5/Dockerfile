@@ -23,11 +23,11 @@ RUN apt-get update \
  && update-ca-certificates -f \
  && curl -O http://www.squid-cache.org/Versions/v5/squid-${SQUID_VERSION}.tar.gz \
  && tar xzf squid-${SQUID_VERSION}.tar.gz \
- && /tmp/${SQUID_VERSION}/configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var \
+ && /tmp/squid-${SQUID_VERSION}/configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var \
       --libexecdir="\${prefix}/lib/squid" --datadir="\${prefix}/share/squid" \
       --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid \
-      --with-pidfile=/var/run/squid.pid --srcdir /tmp/${SQUID_VERSION} \
- && make -s -C /tmp/${SQUID_VERSION} install \
+      --with-pidfile=/var/run/squid.pid --srcdir /tmp/squid-${SQUID_VERSION} \
+ && make -s -C /tmp/squid-${SQUID_VERSION} install \
  && rm -rf squid-${SQUID_VERSION} && rm squid-${SQUID_VERSION}.tar.gz
 
 ENV SQUID_CACHE_DIR=/var/spool/squid \
