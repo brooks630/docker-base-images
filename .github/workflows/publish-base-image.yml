@@ -7,11 +7,12 @@ on:
 
 jobs:
   generate_version_information:
-    name: Generate Version Information
+    name: Generate Version and Timestamp Information
     runs-on: ubuntu-latest
     outputs:
       versions: ${{ steps.set-versions.outputs.versions }}
       latest_version: ${{ steps.set-latest.outputs.latest_version }}
+      timestamp: ${{ steps.timestamp.outputs.timestamp }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,7 +34,13 @@ jobs:
           latest_version=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | tail -1)
           echo "Latest version: $latest_version"
           echo "latest_version=$latest_version" >> $GITHUB_OUTPUT
-
+      - name: Generate timestamp
+        id: timestamp
+        run: |
+          # Generate a timestamp in the format YYYYMMDD-HHMMSS
+          rundate=$(date -u +"%Y%m%d")
+          echo "Timestamp: $timestamp"
+          echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
   build:
     name: Build Architecture-Specific Images
     needs: generate_version_information
@@ -64,6 +71,7 @@ jobs:
           platforms: linux/${{ matrix.architecture }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}
+            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ needs.generate_version_information.outputs.timestamp}}-${{ matrix.architecture }}
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}-${{ needs.generate_version_information.outputs.latest_version == matrix.squid_version && 'latest-' || '' }}${{ matrix.architecture }}
 
   create_manifest:
@@ -82,17 +90,28 @@ jobs:
 
       - name: Create and push multi-architecture manifest
         run: |
-          # Create a multi-architecture manifest for each version
+          # Use the timestamp from the generate_version_information job
+          timestamp="${{ needs.generate_version_information.outputs.timestamp }}"
+
           for version in $(echo '${{ needs.generate_version_information.outputs.versions }}' | jq -r '.[]'); do
+            # Version manifest
             docker manifest create \
               ghcr.io/${{ github.repository_owner }}/squid:$version \
               ghcr.io/${{ github.repository_owner }}/squid:$version-amd64 \
               ghcr.io/${{ github.repository_owner }}/squid:$version-arm64
 
             docker manifest push ghcr.io/${{ github.repository_owner }}/squid:$version
+
+            # Timestamp manifest
+            docker manifest create \
+              ghcr.io/${{ github.repository_owner }}/squid:$version-$timestamp \
+              ghcr.io/${{ github.repository_owner }}/squid:$version-$timestamp-amd64 \
+              ghcr.io/${{ github.repository_owner }}/squid:$version-$timestamp-arm64
+
+            docker manifest push ghcr.io/${{ github.repository_owner }}/squid:$version-$timestamp
           done
 
-          # Create and push the multi-architecture "latest" tag
+          # Latest manifest
           if [ "${{ needs.generate_version_information.outputs.latest_version }}" != "" ]; then
             docker manifest create \
               ghcr.io/${{ github.repository_owner }}/squid:latest \
