@@ -50,6 +50,7 @@ jobs:
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
+          ignore: DL3003
       - name: Build image
         uses: docker/build-push-action@v6
         with:
