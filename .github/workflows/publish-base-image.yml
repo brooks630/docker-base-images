@@ -71,8 +71,7 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}
             ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ needs.generate_version_information.outputs.timestamp}}-${{ matrix.architecture }}
-            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}-${{ needs.generate_version_information.outputs.latest_version == matrix.squid_version && 'latest-' || '' }}${{ matrix.architecture }}
-
+            ${{ matrix.squid_version == needs.generate_version_information.outputs.latest_version && format('ghcr.io/{0}/squid:latest-{1}', github.repository_owner, matrix.architecture) || '' }}
   create_manifest:
     name: Create Multi-Architecture Manifest
     needs: 
