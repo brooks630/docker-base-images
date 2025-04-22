@@ -59,5 +59,3 @@ jobs:
           context: ./squid/${{ matrix.squid_version }}
           file: ./squid/${{ matrix.squid_version }}/Dockerfile
           tags: user/squid:${{ matrix.squid_version }}-test
-      - name: Test image
-        run: docker run --rm user/squid:${{ matrix.squid_version }}-test

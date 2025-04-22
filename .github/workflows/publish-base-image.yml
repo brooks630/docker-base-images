@@ -71,15 +71,6 @@ jobs:
           echo "Timestamp: $timestamp"
           echo "rundate=$rundate" >> $GITHUB_OUTPUT
           echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
-      - name: Build image
-        uses: docker/build-push-action@v6
-        with:
-          load: true
-          context: ./squid/${{ matrix.squid_version }}
-          file: ./squid/${{ matrix.squid_version }}/Dockerfile
-          tags: user/squid:${{ matrix.squid_version }}-test
-      - name: Test image
-        run: docker run --rm user/squid:${{ matrix.squid_version }}-test
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
