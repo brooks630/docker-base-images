@@ -1,5 +1,12 @@
 FROM quay.io/lib/ubuntu:24.04
 
+LABEL org.opencontainers.image.title="Squid 6 Proxy" \
+      org.opencontainers.image.description="Squid 6 Proxy image built on Ubuntu 24.04" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.url="https://github.com/landregistry/docker-base-images/blob/master/README.md" \
+      org.opencontainers.image.source="https://github.com/landregistry/docker-base-images" \
+      org.opencontainers.image.vendor="HM Land Registry"
+
 ARG SQUID_RELEASE=SQUID_6_13
 ARG SQUID_VERSION=squid-6.13
 
