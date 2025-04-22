@@ -19,20 +19,26 @@ ENV SQUID_CACHE_DIR=/var/spool/squid \
 WORKDIR /tmp
 
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends ca-certificates=20240203 g++=4:13.2.0-7ubuntu1 make=4.3-4.1build2 libssl-dev=3.0.13-0ubuntu3.5 pkg-config=1.8.1-2build1 wget=1.21.4-1ubuntu4.1 \
- && rm -rf /var/lib/apt/lists/* \
+ && DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends \
+      ca-certificates=20240203 \
+      g++=4:13.2.0-7ubuntu1 \
+      make=4.3-4.1build2 \
+      libssl-dev=3.0.13-0ubuntu3.5 \
+      pkg-config=1.8.1-2build1 \
+      wget=1.21.4-1ubuntu4.1 \
+      && rm -rf /var/lib/apt/lists/* \
  && update-ca-certificates -f \
  && wget -q https://github.com/squid-cache/squid/releases/download/${SQUID_RELEASE}/${SQUID_VERSION}.tar.gz \
- && tar xzf ${SQUID_VERSION}.tar.gz
-
-WORKDIR /tmp/${SQUID_VERSION}
-
-RUN ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var --libexecdir="\${prefix}/lib/squid" --datadir="\${prefix}/share/squid" --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid \
- && make -s install
-
-WORKDIR /tmp
-
-RUN rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
+ && tar xzf ${SQUID_VERSION}.tar.gz \
+ && ( \
+      cd ${SQUID_VERSION} && \
+      ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var \
+          --libexecdir="/usr/lib/squid" --datadir="/usr/share/squid" \
+          --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid \
+          --with-pidfile=/var/run/squid.pid && \
+      make -s install \
+    ) \
+ && rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
  && wget -q https://github.com/krallin/tini/releases/download/v0.19.0/tini -O /tini \
  && chmod +x /tini \
  && usermod -a -G ${SQUID_GROUP} ${SQUID_USER}
