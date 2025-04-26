@@ -29,7 +29,7 @@ RUN apt-get update \
           --libexecdir="\${prefix}/lib/squid" --datadir="\${prefix}/share/squid" \
           --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid \
           --with-pidfile=/var/run/squid.pid && \
-      make -s install \
+      make --silent --jobs --load-average install \
     ) \
  && rm -rf squid-${SQUID_VERSION} && rm squid-${SQUID_VERSION}.tar.gz
 

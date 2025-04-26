@@ -36,7 +36,7 @@ RUN apt-get update \
           --libexecdir="/usr/lib/squid" --datadir="/usr/share/squid" \
           --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid \
           --with-pidfile=/var/run/squid.pid && \
-      make -s install \
+      make --silent --jobs --load-average install \
     ) \
  && rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
  && wget -q https://github.com/krallin/tini/releases/download/v0.19.0/tini -O /tini \
