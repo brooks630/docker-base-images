@@ -57,7 +57,7 @@ RUN echo "Creating log directory..." \
   && chmod -R 755 ${SQUID_SSLDB_DIR} \
   && chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_SSLDB_DIR} \
   && echo "Adding tini..." \
-  && curl -L https://github.com/krallin/tini/releases/download/v0.18.0/tini > /tini \
+  && curl -L https://github.com/krallin/tini/releases/download/v0.18.0/tini-${TARGETARCH} > /tini \
   && chmod +x /tini
 
 EXPOSE 3128/tcp
