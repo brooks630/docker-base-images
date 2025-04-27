@@ -35,7 +35,7 @@ jobs:
           echo "Latest version: $latest_version"
           echo "latest_version=$latest_version" >> $GITHUB_OUTPUT
   build_and_test:
-    name: Build and Test Squid Base Image (Squid ${{ matrix.squid_version }})
+    name: Build Architecture-Specific Images
     needs: generate_version_information
     runs-on: ${{ matrix.architecture == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     strategy:
