@@ -7,6 +7,7 @@ LABEL org.opencontainers.image.title="Squid 5 Proxy" \
       org.opencontainers.image.source="https://github.com/landregistry/docker-base-images" \
       org.opencontainers.image.vendor="HM Land Registry"
 
+ARG TARGETARCH
 ARG SQUID_VERSION=5.9
 
 WORKDIR /tmp

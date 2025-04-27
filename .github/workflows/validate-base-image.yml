@@ -37,7 +37,7 @@ jobs:
   build_and_test:
     name: Build and Test Squid Base Image (Squid ${{ matrix.squid_version }})
     needs: generate_version_information
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.architecture == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     strategy:
       matrix:
         squid_version: ${{ fromJson(needs.generate_version_information.outputs.versions) }}
@@ -51,10 +51,29 @@ jobs:
         with:
           dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
           ignore: DL3003
-      - name: Build image
+      strategy:
+      matrix:
+        architecture: [amd64, arm64]
+        squid_version: ${{ fromJson(needs.generate_version_information.outputs.versions) }}
+    runs-on: ${{ matrix.architecture == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lint check
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
+          ignore: DL3003
+      - name: Build and push architecture-specific image
         uses: docker/build-push-action@v6
         with:
-          load: true
           context: ./squid/${{ matrix.squid_version }}
           file: ./squid/${{ matrix.squid_version }}/Dockerfile
-          tags: user/squid:${{ matrix.squid_version }}-test
+          push: true
+          tags: user/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}-test

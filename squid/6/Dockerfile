@@ -7,6 +7,7 @@ LABEL org.opencontainers.image.title="Squid 6 Proxy" \
       org.opencontainers.image.source="https://github.com/landregistry/docker-base-images" \
       org.opencontainers.image.vendor="HM Land Registry"
 
+ARG TARGETARCH
 ARG SQUID_RELEASE=SQUID_6_13
 ARG SQUID_VERSION=squid-6.13
 
@@ -39,7 +40,7 @@ RUN apt-get update \
       make -s install \
     ) \
  && rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
- && wget -q https://github.com/krallin/tini/releases/download/v0.19.0/tini -O /tini \
+ && wget -q https://github.com/krallin/tini/releases/download/v0.19.0/tini-${TARGETARCH} -O /tini \
  && chmod +x /tini \
  && usermod -a -G ${SQUID_GROUP} ${SQUID_USER}
 
