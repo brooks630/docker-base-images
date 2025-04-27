@@ -57,5 +57,4 @@ jobs:
         with:
           context: ./squid/${{ matrix.squid_version }}
           file: ./squid/${{ matrix.squid_version }}/Dockerfile
-          push: true
           tags: user/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}-test
