@@ -36,7 +36,7 @@ RUN apt-get update \
       ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var \
           --libexecdir="/usr/lib/squid" --datadir="/usr/share/squid" \
           --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid \
-          --with-pidfile=/var/run/squid.pid && \
+          --with-pidfile=/var/run/squid.pid --host=${TARGETARCH} && \
       make -s install \
     ) \
  && rm -rf ${SQUID_VERSION} && rm ${SQUID_VERSION}.tar.gz \
