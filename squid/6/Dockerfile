@@ -27,7 +27,7 @@ RUN apt-get update \
       libssl-dev=3.0.13-0ubuntu3.5 \
       pkg-config=1.8.1-2build1 \
       wget=1.21.4-1ubuntu4.1 \
-      && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /var/lib/apt/lists/* \
  && update-ca-certificates -f \
  && wget -q https://github.com/squid-cache/squid/releases/download/${SQUID_RELEASE}/${SQUID_VERSION}.tar.gz \
  && tar xzf ${SQUID_VERSION}.tar.gz \
