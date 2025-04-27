@@ -26,10 +26,13 @@ RUN apt-get update \
  && tar xzf squid-${SQUID_VERSION}.tar.gz \
  && ( \
       cd squid-${SQUID_VERSION} && \
+      CGFLAGS="-g0 -O2" \
+      CXXFLAGS="-g0 -O2" \
+      LDFLAGS="-s" \
       ./configure --enable-ssl-crtd --with-openssl --prefix=/usr --localstatedir=/var \
           --libexecdir="\${prefix}/lib/squid" --datadir="\${prefix}/share/squid" \
           --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid \
-          --with-pidfile=/var/run/squid.pid --host=${TARGETARCH} && \
+          --with-pidfile=/var/run/squid.pid --build="$(uname -m)" --host=="$(uname -m)" && \
       make -s install \
     ) \
  && rm -rf squid-${SQUID_VERSION} && rm squid-${SQUID_VERSION}.tar.gz
