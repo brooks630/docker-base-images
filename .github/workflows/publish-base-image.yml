@@ -6,13 +6,14 @@ on:
       - master
 
 jobs:
-  generate_version_information:
-    name: Generate Version and Timestamp Information
+  setup_tasks:
+    name: Setup Tasks
     runs-on: ubuntu-latest
     outputs:
       versions: ${{ steps.set-versions.outputs.versions }}
       latest_version: ${{ steps.set-latest.outputs.latest_version }}
       timestamp: ${{ steps.timestamp.outputs.timestamp }}
+      repo_owner: ${{ steps.repo-owner.outputs.repo_owner }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -41,28 +42,35 @@ jobs:
           timestamp=$(date -u +"%Y%m%d-%H%M%S")
           echo "Timestamp: $timestamp"
           echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
+      - name: Lowercase repository owner
+        id: repo-owner
+        run: |
+          # Lowercase the repository owner
+          repo_owner=$(echo "${{ github.repository_owner }}" | awk '{print tolower($0)}')
+          echo "Repository owner (lowercase): $repo_owner"
+          echo "repo_owner=$repo_owner" >> $GITHUB_OUTPUT
   build:
     name: Build Architecture-Specific Images
-    needs: generate_version_information
+    needs: setup_tasks
     strategy:
       matrix:
         architecture: [amd64, arm64]
-        squid_version: ${{ fromJson(needs.generate_version_information.outputs.versions) }}
+        squid_version: ${{ fromJson(needs.setup_tasks.outputs.versions) }}
     runs-on: ${{ matrix.architecture == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Lint check
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
+          ignore: DL3003
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Lint check
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
-          ignore: DL3003
       - name: Build and push architecture-specific image
         uses: docker/build-push-action@v6
         with:
@@ -70,14 +78,14 @@ jobs:
           file: ./squid/${{ matrix.squid_version }}/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}
-            ghcr.io/${{ github.repository_owner }}/squid:${{ matrix.squid_version }}-${{ needs.generate_version_information.outputs.timestamp}}-${{ matrix.architecture }}
-            ${{ matrix.squid_version == needs.generate_version_information.outputs.latest_version && format('ghcr.io/{0}/squid:latest-{1}', github.repository_owner, matrix.architecture) || '' }}
+            ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}
+            ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:${{ matrix.squid_version }}-${{ needs.setup_tasks.outputs.timestamp}}-${{ matrix.architecture }}
+            ${{ matrix.squid_version == needs.setup_tasks.outputs.latest_version && format('ghcr.io/{0}/squid:latest-{1}', needs.setup_tasks.outputs.repo_owner, matrix.architecture) || '' }}
   create_manifest:
     name: Create Multi-Architecture Manifest
     needs: 
       - build
-      - generate_version_information
+      - setup_tasks
     runs-on: ubuntu-latest
     steps:
       - name: Login to GHCR
@@ -89,33 +97,33 @@ jobs:
 
       - name: Create and push multi-architecture manifest
         run: |
-          # Use the timestamp from the generate_version_information job
-          timestamp="${{ needs.generate_version_information.outputs.timestamp }}"
+          # Use the timestamp from the setup_tasks job
+          timestamp="${{ needs.setup_tasks.outputs.timestamp }}"
 
-          for version in $(echo '${{ needs.generate_version_information.outputs.versions }}' | jq -r '.[]'); do
+          for version in $(echo '${{ needs.setup_tasks.outputs.versions }}' | jq -r '.[]'); do
             # Version manifest
             docker manifest create \
-              ghcr.io/${{ github.repository_owner }}/squid:$version \
-              ghcr.io/${{ github.repository_owner }}/squid:$version-amd64 \
-              ghcr.io/${{ github.repository_owner }}/squid:$version-arm64
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:$version \
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:$version-amd64 \
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:$version-arm64
 
-            docker manifest push ghcr.io/${{ github.repository_owner }}/squid:$version
+            docker manifest push ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:$version
 
             # Timestamp manifest
             docker manifest create \
-              ghcr.io/${{ github.repository_owner }}/squid:$version-$timestamp \
-              ghcr.io/${{ github.repository_owner }}/squid:$version-$timestamp-amd64 \
-              ghcr.io/${{ github.repository_owner }}/squid:$version-$timestamp-arm64
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:$version-$timestamp \
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:$version-$timestamp-amd64 \
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:$version-$timestamp-arm64
 
-            docker manifest push ghcr.io/${{ github.repository_owner }}/squid:$version-$timestamp
+            docker manifest push ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:$version-$timestamp
           done
 
           # Latest manifest
-          if [ "${{ needs.generate_version_information.outputs.latest_version }}" != "" ]; then
+          if [ "${{ needs.setup_tasks.outputs.latest_version }}" != "" ]; then
             docker manifest create \
-              ghcr.io/${{ github.repository_owner }}/squid:latest \
-              ghcr.io/${{ github.repository_owner }}/squid:${{ needs.generate_version_information.outputs.latest_version }}-amd64 \
-              ghcr.io/${{ github.repository_owner }}/squid:${{ needs.generate_version_information.outputs.latest_version }}-arm64
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:latest \
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:${{ needs.setup_tasks.outputs.latest_version }}-amd64 \
+              ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:${{ needs.setup_tasks.outputs.latest_version }}-arm64
 
-            docker manifest push ghcr.io/${{ github.repository_owner }}/squid:latest
+            docker manifest push ghcr.io/${{ needs.setup_tasks.outputs.repo_owner }}/squid:latest
           fi
