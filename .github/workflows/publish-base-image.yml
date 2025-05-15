@@ -13,6 +13,7 @@ jobs:
       versions: ${{ steps.set-versions.outputs.versions }}
       latest_version: ${{ steps.set-latest.outputs.latest_version }}
       timestamp: ${{ steps.timestamp.outputs.timestamp }}
+      repo_owner: ${{ steps.repo-owner.outputs.repo_owner }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

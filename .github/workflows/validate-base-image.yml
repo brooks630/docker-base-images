@@ -13,6 +13,7 @@ jobs:
     outputs:
       versions: ${{ steps.set-versions.outputs.versions }}
       latest_version: ${{ steps.set-latest.outputs.latest_version }}
+      repo_owner: ${{ steps.repo-owner.outputs.repo_owner }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,8 +50,6 @@ jobs:
       matrix:
         architecture: [amd64, arm64]
         squid_version: ${{ fromJson(needs.setup_tasks.outputs.versions) }}
-    env:
-      LATEST_VERSION: ${{ needs.setup_tasks.outputs.latest_version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,4 +63,4 @@ jobs:
         with:
           context: ./squid/${{ matrix.squid_version }}
           file: ./squid/${{ matrix.squid_version }}/Dockerfile
-          tags: ${{ needs.setup_tasks.outputs.repo_owner}}/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}-test
+          tags: ${{ needs.setup_tasks.outputs.repo_owner }}/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}-test
