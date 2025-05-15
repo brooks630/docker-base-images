@@ -1,0 +1,60 @@
+name: Squid Base Image Validate CI
+
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+
+jobs:
+  generate_version_information:
+    name: Generate Version Information
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.set-versions.outputs.versions }}
+      latest_version: ${{ steps.set-latest.outputs.latest_version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Generate versions dynamically
+        id: set-versions
+        run: |
+          # Find all numerical subdirectories in the squid directory
+          versions=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | jq -R . | jq -s -c .)
+          if [ -z "$versions" ] || [ "$versions" = "[]" ]; then
+            echo "No valid subdirectories found. Exiting."
+            exit 1
+          fi
+          echo "Versions: $versions"
+          echo "versions=$versions" >> $GITHUB_OUTPUT
+      - name: Determine latest version
+        id: set-latest
+        run: |
+          # Find the highest numerical subdirectory
+          latest_version=$(find squid -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -E '^[0-9]+$' | sort -n | tail -1)
+          echo "Latest version: $latest_version"
+          echo "latest_version=$latest_version" >> $GITHUB_OUTPUT
+  build_and_test:
+    name: Build Architecture-Specific Images
+    needs: generate_version_information
+    runs-on: ${{ matrix.architecture == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    strategy:
+      matrix:
+        architecture: [amd64, arm64]
+        squid_version: ${{ fromJson(needs.generate_version_information.outputs.versions) }}
+    env:
+      LATEST_VERSION: ${{ needs.generate_version_information.outputs.latest_version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint check
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
+          ignore: DL3003      
+      - name: Build architecture-specific image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./squid/${{ matrix.squid_version }}
+          file: ./squid/${{ matrix.squid_version }}/Dockerfile
+          tags: user/squid:${{ matrix.squid_version }}-${{ matrix.architecture }}-test
