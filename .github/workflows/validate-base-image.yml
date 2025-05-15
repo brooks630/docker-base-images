@@ -16,11 +16,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Lint check
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
-          ignore: DL3003      
       - name: Generate versions dynamically
         id: set-versions
         run: |
@@ -59,6 +54,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Lint check
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./squid/${{ matrix.squid_version }}/Dockerfile
+          ignore: DL3003
       - name: Build architecture-specific image
         uses: docker/build-push-action@v6
         with:
